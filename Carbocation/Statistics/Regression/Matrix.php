@@ -58,6 +58,11 @@ class Matrix
             throw new MatrixException("Invalid matrix");
         }
     }
+    
+    public function copy()
+    {
+        return clone $this;
+    }
 
     /**
      * Display the matrix
@@ -81,7 +86,7 @@ class Matrix
      * 
      * @return array 
      */
-    public function getInnerArray()
+    public function getData()
     {
         return $this->MainMatrix;
     }
@@ -111,7 +116,7 @@ class Matrix
      * @param int $col
      * @return object(depends on input)
      */
-    public function getElementAt($row, $col)
+    public function getEntry($row, $col)
     {
         return $this->MainMatrix[$row][$col];
     }
@@ -152,7 +157,7 @@ class Matrix
         for($i = 0; $i < $rows1; $i++){
             for($j = 0; $j < $columns1; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] -
-                        $matrix2->getElementAt($i, $j);
+                        $matrix2->getEntry($i, $j);
             }
         }
         return new Matrix($newMatrix);
@@ -176,7 +181,7 @@ class Matrix
         for($i = 0; $i < $rows1; $i++){
             for($j = 0; $j < $columns1; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] +
-                        $matrix2->getElementAt($i, $j);
+                        $matrix2->getEntry($i, $j);
             }
         }
         return new Matrix($newMatrix);
@@ -203,7 +208,7 @@ class Matrix
                 $newMatrix[$i][$j] = 0;
                 for($ctr = 0; $ctr < $columns1; $ctr++){
                     $newMatrix[$i][$j] += $this->MainMatrix[$i][$ctr] *
-                            $matrix2->getElementAt($ctr, $j);
+                            $matrix2->getEntry($ctr, $j);
                 }
             }
         }
@@ -267,7 +272,7 @@ class Matrix
             if($crossX != $i){
                 for($j = 0; $j < $columns; $j++){
                     if($crossY != $j){
-                        $newMatrix[$p][$q] = $this->getElementAt($i, $j);
+                        $newMatrix[$p][$q] = $this->getEntry($i, $j);
                         //$matrix[$i][$j];
                         $q++;
                     }

@@ -91,7 +91,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $ret = $mat1->add($mat2);
 
         $testRet = array(array(2, 4, 6, 8), array(8, 10, 12, 14));
-        $this->assertSame($ret->getInnerArray(), $testRet);
+        $this->assertSame($ret->getData(), $testRet);
     }
 
     /**
@@ -126,7 +126,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $ret = $mat1->subtract($mat2);
 
         $testRet = array(array(0, 0, 0, 0), array(0, 0, 0, 0));
-        $this->assertSame($ret->getInnerArray(), $testRet);
+        $this->assertSame($ret->getData(), $testRet);
     }
 
     /**
@@ -163,7 +163,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $ret = $mat1->multiply($mat2);
 
         $testRet = array(array(4, 11, -15), array(5, 7, -7));
-        $this->assertSame($ret->getInnerArray(), $testRet);
+        $this->assertSame($ret->getData(), $testRet);
     }
 
     /**
@@ -219,7 +219,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $mat1 = new Matrix($arr1);
         $t = $mat1->transpose();
         $testarr = array(array(1, 3), array(2, 4));
-        $this->assertSame($t->getInnerArray(), $testarr);
+        $this->assertSame($t->getData(), $testarr);
     }
 
     public function testInverse()
@@ -229,7 +229,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
             array(3, 2)
         );
         $mat1 = new Matrix($arr1);
-        $t = $mat1->invert()->getInnerArray();
+        $t = $mat1->invert()->getData();
         $exp = array(
             array(-2, 3),
             array(3, -4)
@@ -248,7 +248,7 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
             array(4, 5)
         );
         $mat1 = new Matrix($arr1);
-        $t = $mat1->invert()->getInnerArray();
+        $t = $mat1->invert()->getData();
     }
     
     public function testTrace()
@@ -278,6 +278,17 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $mat = new Matrix($arr);
         $t = $mat->getTrace();
         
+    }
+    
+    public function testCopy()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4)
+        );
+        $m = new Matrix($arr);
+        $n = $m->copy();
+        $this->assertInstanceOf('Carbocation\Statistics\Regression\Matrix', $n);
     }
     
 }
