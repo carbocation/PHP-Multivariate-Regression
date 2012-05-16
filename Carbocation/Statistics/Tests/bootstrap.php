@@ -1,30 +1,28 @@
 <?php
-spl_autoload_register(function($spec) {
+spl_autoload_register(function($classToInclude) {
     
 	// look for last namespace separator
-	$pos = strrpos($spec, '\\');
+	$pos = strrpos($classToInclude, '\\');
 	if ($pos === false) {
 		// no namespace, class portion only
 		$namespace = '';
-		$class	 = $spec;
+		$class	 = $classToInclude;
 	} else {
 		// pre-convert namespace portion to file path
-		$namespace = substr($spec, 0, $pos);
-		$namespace = str_replace('\\', DIRECTORY_SEPARATOR, $namespace)
-				   . DIRECTORY_SEPARATOR;
-	
-		// class portion
-		$class = substr($spec, $pos + 1);
+		$namespace = substr($classToInclude, 0, $pos);
+		$namespace = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+		$class = substr($classToInclude, $pos + 1);
 	}
     
-    $file = $class . '.php';
+    $fileName = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
 
-	// the root directory
+	// the project's root directory
 	$dir = dirname(dirname(dirname(__DIR__)));
     
     // look for a source file
     $src = $dir 
-            . DIRECTORY_SEPARATOR . $namespace . $file;
+            . DIRECTORY_SEPARATOR . $namespace
+            . DIRECTORY_SEPARATOR . $fileName;
     
     if (is_readable($src)) {
         require $src;
