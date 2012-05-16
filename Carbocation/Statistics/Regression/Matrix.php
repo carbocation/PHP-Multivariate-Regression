@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c)  2011 Shankar Manamalkav <nshankar@ufl.edu>
  * 
@@ -46,15 +47,14 @@ class Matrix
      */
     function __construct($matrix)
     {
-        for ($i = 0; $i < count($matrix); $i++)
-        {
-            for ($j = 0; $j < count($matrix[$i]); $j++)
+        for($i = 0; $i < count($matrix); $i++){
+            for($j = 0; $j < count($matrix[$i]); $j++){
                 $this->MainMatrix[$i][$j] = $matrix[$i][$j];
+            }
         }
         $this->rows = count($this->MainMatrix);
         $this->columns = count($this->MainMatrix[0]);
-        if (!$this->isValidMatrix())
-        {
+        if(!$this->isValidMatrix()){
             throw new MatrixException("Invalid matrix");
         }
     }
@@ -68,11 +68,11 @@ class Matrix
      */
     private function isValidMatrix()
     {
-        for ($i = 0; $i < $this->rows; $i++)
-        {
+        for($i = 0; $i < $this->rows; $i++){
             $numCol = count($this->MainMatrix [$i]);
-            if ($this->columns != $numCol)
+            if($this->columns != $numCol){
                 return false;
+            }
         }
         return true;
     }
@@ -86,10 +86,8 @@ class Matrix
         $rows = $this->rows;
         $cols = $this->columns;
         echo "Order of the matrix is ($rows rows X $cols columns)\n";
-        for ($r = 0; $r < $rows; $r++)
-        {
-            for ($c = 0; $c < $cols; $c++)
-            {
+        for($r = 0; $r < $rows; $r++){
+            for($c = 0; $c < $cols; $c++){
                 echo $this->MainMatrix[$r][$c];
             }
             echo "\n";
@@ -145,8 +143,9 @@ class Matrix
      */
     public function isSquareMatrix()
     {
-        if ($this->rows == $this->columns)
+        if($this->rows == $this->columns){
             return true;
+        }
 
         return false;
     }
@@ -164,13 +163,12 @@ class Matrix
         $rows2 = $matrix2->NumRows();
         $columns2 = $matrix2->NumColumns();
 
-        if (($rows1 != $rows2) || ($columns1 != $columns2))
+        if(($rows1 != $rows2) || ($columns1 != $columns2)){
             throw new MatrixException('Matrices are not the same size!');
+        }
 
-        for ($i = 0; $i < $rows1; $i++)
-        {
-            for ($j = 0; $j < $columns1; $j++)
-            {
+        for($i = 0; $i < $rows1; $i++){
+            for($j = 0; $j < $columns1; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] -
                         $matrix2->GetElementAt($i, $j);
             }
@@ -189,13 +187,12 @@ class Matrix
         $rows2 = $matrix2->NumRows();
         $columns1 = $this->columns;
         $columns2 = $matrix2->NumColumns();
-        if (($rows1 != $rows2) || ($columns1 != $columns2))
+        if(($rows1 != $rows2) || ($columns1 != $columns2)){
             throw new MatrixException('Matrices are not the same size!');
+        }
 
-        for ($i = 0; $i < $rows1; $i++)
-        {
-            for ($j = 0; $j < $columns1; $j++)
-            {
+        for($i = 0; $i < $rows1; $i++){
+            for($j = 0; $j < $columns1; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] +
                         $matrix2->GetElementAt($i, $j);
             }
@@ -216,15 +213,13 @@ class Matrix
 
         $columns2 = $matrix2->NumColumns();
         $rows2 = $matrix2->NumRows();
-        if ($columns1 != $rows2)
+        if($columns1 != $rows2){
             throw new MatrixException('Incompatible matrix types supplied');
-        for ($i = 0; $i < $rows1; $i++)
-        {
-            for ($j = 0; $j < $columns2; $j++)
-            {
+        }
+        for($i = 0; $i < $rows1; $i++){
+            for($j = 0; $j < $columns2; $j++){
                 $newMatrix[$i][$j] = 0;
-                for ($ctr = 0; $ctr < $columns1; $ctr++)
-                {
+                for($ctr = 0; $ctr < $columns1; $ctr++){
                     $newMatrix[$i][$j] += $this->MainMatrix[$i][$ctr] *
                             $matrix2->GetElementAt($ctr, $j);
                 }
@@ -244,10 +239,8 @@ class Matrix
         $columns = $this->columns;
 
         $newMatrix = array();
-        for ($i = 0; $i < $rows; $i++)
-        {
-            for ($j = 0; $j < $columns; $j++)
-            {
+        for($i = 0; $i < $rows; $i++){
+            for($j = 0; $j < $columns; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] * $scalar;
             }
         }
@@ -265,10 +258,8 @@ class Matrix
         $columns = $this->columns;
 
         $newMatrix = array();
-        for ($i = 0; $i < $rows; $i++)
-        {
-            for ($j = 0; $j < $columns; $j++)
-            {
+        for($i = 0; $i < $rows; $i++){
+            for($j = 0; $j < $columns; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] / $scalar;
             }
         }
@@ -289,15 +280,11 @@ class Matrix
 
         $newMatrix = array();
         $p = 0; // submatrix row counter
-        for ($i = 0; $i < $rows; $i++)
-        {
+        for($i = 0; $i < $rows; $i++){
             $q = 0; // submatrix col counter
-            if ($crossX != $i)
-            {
-                for ($j = 0; $j < $columns; $j++)
-                {
-                    if ($crossY != $j)
-                    {
+            if($crossX != $i){
+                for($j = 0; $j < $columns; $j++){
+                    if($crossY != $j){
                         $newMatrix[$p][$q] = $this->GetElementAt($i, $j);
                         //$matrix[$i][$j];
                         $q++;
@@ -316,29 +303,23 @@ class Matrix
      */
     public function Determinant()
     {
-        if (!$this->isSquareMatrix())
+        if(!$this->isSquareMatrix())
             throw new MatrixException("Not a square matrix!");
         $rows = $this->rows;
         $columns = $this->columns;
         $determinant = 0;
-        if ($rows == 1 && $columns == 1)
-        {
+        if($rows == 1 && $columns == 1){
             return $this->MainMatrix[0][0];
         }
-        if ($rows == 2 && $columns == 2)
-        {
+        if($rows == 2 && $columns == 2){
             $determinant = $this->MainMatrix[0][0] * $this->MainMatrix[1][1] -
                     $this->MainMatrix[0][1] * $this->MainMatrix[1][0];
-        } else
-        {
-            for ($j = 0; $j < $columns; $j++)
-            {
+        }else{
+            for($j = 0; $j < $columns; $j++){
                 $subMatrix = $this->GetSubMatrix(0, $j);
-                if (fmod($j, 2) == 0)
-                {
+                if(fmod($j, 2) == 0){
                     $determinant += $this->MainMatrix[0][$j] * $subMatrix->Determinant();
-                } else
-                {
+                }else{
                     $determinant -= $this->MainMatrix[0][$j] * $subMatrix->Determinant();
                 }
             }
@@ -355,10 +336,8 @@ class Matrix
         $rows = $this->rows;
         $columns = $this->columns;
         $newArray = array();
-        for ($i = 0; $i < $rows; $i++)
-        {
-            for ($j = 0; $j < $columns; $j++)
-            {
+        for($i = 0; $i < $rows; $i++){
+            for($j = 0; $j < $columns; $j++){
                 $newArray[$j][$i] = $this->MainMatrix[$i][$j];
             }
         }
@@ -373,28 +352,26 @@ class Matrix
      */
     function Inverse()
     {
-        if (!$this->isSquareMatrix())
+        if(!$this->isSquareMatrix()){
             throw new MatrixException("Not a square matrix!");
+        }
         $rows = $this->rows;
         $columns = $this->columns;
 
         $newMatrix = array();
-        for ($i = 0; $i < $rows; $i++)
-        {
-            for ($j = 0; $j < $columns; $j++)
-            {
+        for($i = 0; $i < $rows; $i++){
+            for($j = 0; $j < $columns; $j++){
                 $subMatrix = $this->GetSubMatrix($i, $j);
-                if (fmod($i + $j, 2) == 0)
-                {
+                if(fmod($i + $j, 2) == 0){
                     $newMatrix[$i][$j] = ($subMatrix->Determinant());
-                } else
-                {
+                }else{
                     $newMatrix[$i][$j] = -($subMatrix->Determinant());
                 }
             }
         }
         $cofactorMatrix = new Matrix($newMatrix);
         return $cofactorMatrix->Transpose()
-                ->ScalarDivide($this->Determinant());
+                        ->ScalarDivide($this->Determinant());
     }
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c)  2011 Shankar Manamalkav <nshankar@ufl.edu>
  * 
@@ -31,6 +32,7 @@
 namespace Carbocation\Statistics\Regression;
 
 use Carbocation\Statistics\Regression\Matrix;
+use Carbocation\Statistics\Regression\RegressionException;
 
 class Regression
 {
@@ -113,25 +115,24 @@ class Regression
      * @param array $xcolnumbers
      * @param type $ycolnumber 
      */
-    public function LoadCSV($file, array $ycol, array $xcol, $hasHeader=true)
+    public function LoadCSV($file, array $ycol, array $xcol, $hasHeader = true)
     {
         $xarray = array();
         $yarray = array();
         $handle = fopen($file, "r");
 
         //if first row has headers.. ignore
-        if ($hasHeader)
+        if($hasHeader){
             $data = fgetcsv($handle);
+        }
         //get the data into array
-        while (($data = fgetcsv($handle)) !== FALSE)
-        {
+        while(($data = fgetcsv($handle)) !== FALSE){
             $rawData[] = array($data);
         }
         $sampleSize = count($rawData);
 
         $r = 0;
-        while ($r < $sampleSize)
-        {
+        while($r < $sampleSize){
             $xarray[] = $this->GetArray($rawData, $xcol, $r, true);
             $yarray[] = $this->GetArray($rawData, $ycol, $r);   //y always has 1 col!
             $r++;
@@ -140,27 +141,28 @@ class Regression
         $this->y = $yarray;
     }
 
-    private function GetArray($rawData, $cols, $r, $incIntercept=false)
+    private function GetArray($rawData, $cols, $r, $incIntercept = false)
     {
         $arrIdx = "";
         $z = 0;
         $arr = array();
-        if ($incIntercept)
+        if($incIntercept){
             //prepend an all 1's column for the intercept
-            $arr[]=1;
-        foreach ($cols as $key => $val)
-        {
+            $arr[] = 1;
+        }
+        foreach($cols as $key => $val){
             $arrIdx = '$rawData[' . $r . '][0][' . $val . '];';
             eval("\$z = $arrIdx");
             $arr[] = $z;
         }
         return $arr;
     }
-    
+
     public function Compute()
     {
-        if ((count($this->x)==0)||(count($this->y)==0))
-                throw new Exception ('Please supply valid X and Y arrays');
+        if((count($this->x) == 0) || (count($this->y) == 0)){
+            throw new RegressionException('Please supply valid X and Y arrays');
+        }
         $mx = new Matrix($this->x);
         $my = new Matrix($this->y);
 
@@ -176,25 +178,26 @@ class Regression
         $dfModel = $num_independent - 1;
         $dfResidual = $dfTotal - $dfModel;
         //create unit vector..
-        for ($ctr = 0; $ctr < $sample_size; $ctr++)
+        for($ctr = 0; $ctr < $sample_size; $ctr++){
             $u[] = array(1);
+        }
 
         $um = new Matrix($u);
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
         $SSR = $coeff->Transpose()->Multiply($mx->Transpose())->Multiply($my)
                 ->Subtract(
-                        ($my->Transpose()
-                        ->Multiply($um)
-                        ->Multiply($um->Transpose())
-                        ->Multiply($my)
-                        ->ScalarDivide($sample_size))
+                ($my->Transpose()
+                ->Multiply($um)
+                ->Multiply($um->Transpose())
+                ->Multiply($my)
+                ->ScalarDivide($sample_size))
         );
 
         $SSE = $my->Transpose()->Multiply($my)->Subtract(
-                        $coeff->Transpose()
-                                ->Multiply($mx->Transpose())
-                                ->Multiply($my)
+                $coeff->Transpose()
+                        ->Multiply($mx->Transpose())
+                        ->Multiply($my)
         );
 
         $SSTO = $SSR->Add($SSE);
@@ -211,8 +214,7 @@ class Regression
         $e = ($MSE->GetElementAt(0, 0));
 
         $stdErr = $xTx->ScalarMultiply($e);
-        for ($i = 0; $i < $num_independent; $i++)
-        {
+        for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements
             $searray[] = array(sqrt($stdErr->GetElementAt($i, $i)));
             //compute the t-statistic
@@ -221,8 +223,7 @@ class Regression
             $pvalue[] = array($this->Student_PValue($tstat[$i][0], $dfResidual));
         }
         //convert into 1-d vectors and store
-        for ($ctr = 0; $ctr < $num_independent; $ctr++)
-        {
+        for($ctr = 0; $ctr < $num_independent; $ctr++){
             $this->coefficients[] = $coeff->GetElementAt($ctr, 0);
             $this->stderrors[] = $searray[$ctr][0];
             $this->tstats[] = $tstat[$ctr][0];
@@ -241,14 +242,16 @@ class Regression
         $t_stat = abs($t_stat);
         $mw = $t_stat / sqrt($deg_F);
         $th = atan2($mw, 1);
-        if ($deg_F == 1)
+        if($deg_F == 1){
             return 1.0 - $th / (M_PI / 2.0);
+        }
         $sth = sin($th);
         $cth = cos($th);
-        if ($deg_F % 2 == 1)
+        if($deg_F % 2 == 1){
             return 1.0 - ($th + $sth * $cth * $this->statcom($cth * $cth, 2, $deg_F - 3, -1)) / (M_PI / 2.0);
-        else
+        }else{
             return 1.0 - ($sth * $this->statcom($cth * $cth, 1, $deg_F - 3, -1));
+        }
     }
 
     /**
@@ -264,8 +267,7 @@ class Regression
         $zz = 1;
         $z = $zz;
         $k = $i;
-        while ($k <= $j)
-        {
+        while($k <= $j){
             $zz = $zz * $q * $k / ( $k - $b);
             $z = $z + $zz;
             $k = $k + 2;

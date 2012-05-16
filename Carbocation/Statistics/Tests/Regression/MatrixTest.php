@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c)  2011 Shankar Manamalkav <nshankar@ufl.edu>
  * 
@@ -24,6 +25,7 @@
  * @author carbocation<james@carbocation.com>
  * 
  */
+
 namespace Carbocation\Statistics\Tests\Regression;
 
 use Carbocation\Statistics\Regression\Matrix;
@@ -32,23 +34,25 @@ use Carbocation\Statistics\Regression\MatrixException;
 
 class Matrixtest extends \PHPUnit_Framework_TestCase
 {
+
     public function testCanCreate2dMatrix()
     {
         $arr = array(
-            array(1,2),
-            array(3,4)
+            array(1, 2),
+            array(3, 4)
         );
         $m = new Matrix($arr);
         $this->assertInstanceOf('Carbocation\Statistics\Regression\Matrix', $m);
     }
+
     /**
      * test console display function to ensure 100% code coverage
      */
     public function testMatrixDisplay()
     {
-          $arr = array(
-            array(1,2),
-            array(3,4)
+        $arr = array(
+            array(1, 2),
+            array(3, 4)
         );
         $m = new Matrix($arr);
         $m->DisplayMatrix();
@@ -180,7 +184,6 @@ class Matrixtest extends \PHPUnit_Framework_TestCase
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
         $ret = $mat1->Multiply($mat2);
-        //the above should throw an exception!
     }
 
     public function testDeterminant()
@@ -248,6 +251,7 @@ class Matrixtest extends \PHPUnit_Framework_TestCase
         $mat1 = new Matrix($arr1);
         $t = $mat1->Inverse()->GetInnerArray();
     }
+
     /**
      * Tally using attached excel workbook  - It computes regression using excel
      */
@@ -285,7 +289,6 @@ class Matrixtest extends \PHPUnit_Framework_TestCase
         $reg->setX($x);
         $reg->setY($y);
         $reg->Compute();    //go!
-
         //all our expected values for the above dataset.
         $testSSEScalar = 447.808;
         $testSSRScalar = 1448.2166;
@@ -307,9 +310,7 @@ class Matrixtest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($testStdErr, $reg->getStandardError(), '', .01);
         $this->assertEquals($testTstats, $reg->getTStats(), '', .01);
         $this->assertEquals($testPValues, $reg->getPValues(), '', .01);
-        
     }
-    
 
     /**
      * @link http://davidmlane.com/hyperstat/prediction.html
