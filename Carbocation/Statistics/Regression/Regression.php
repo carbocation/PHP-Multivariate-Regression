@@ -24,10 +24,15 @@
  * y=a+b1x1+b2x2+b3x3...
  *
  * @author shankar<nshankar@ufl.edu>
- * 
+ * @author carbocation<james@carbocation.com>
  * 
  */
-class Lib_Regression
+
+namespace Carbocation\Statistics\Regression;
+
+#use \Carbocation\Statistics\Regression\Matrix;
+
+class Regression
 {
 
     protected $SSEScalar; //sum of squares due to error
@@ -45,7 +50,7 @@ class Lib_Regression
     //implement singleton
     /**
      * An instance of this class (singleton)
-     * @var Lib_Regression 
+     * @var Regression 
      */
     public function setX($x)
     {
@@ -156,8 +161,8 @@ class Lib_Regression
     {
         if ((count($this->x)==0)||(count($this->y)==0))
                 throw new Exception ('Please supply valid X and Y arrays');
-        $mx = new Lib_Matrix($this->x);
-        $my = new Lib_Matrix($this->y);
+        $mx = new Matrix($this->x);
+        $my = new Matrix($this->y);
 
         //coefficient(b) = (X'X)-1X'Y 
         $xTx = $mx->Transpose()->Multiply($mx)->Inverse();
@@ -174,7 +179,7 @@ class Lib_Regression
         for ($ctr = 0; $ctr < $sample_size; $ctr++)
             $u[] = array(1);
 
-        $um = new Lib_Matrix($u);
+        $um = new Matrix($u);
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
         $SSR = $coeff->Transpose()->Multiply($mx->Transpose())->Multiply($my)
@@ -269,5 +274,3 @@ class Lib_Regression
     }
 
 }
-
-?>

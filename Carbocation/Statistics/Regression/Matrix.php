@@ -24,7 +24,10 @@
  *
  * @author shankar<nshankar@ufl.edu>
  */
-class Lib_Matrix
+
+namespace Carbocation\Statistics\Regression;
+
+class Matrix
 {
 
     //global vars
@@ -148,10 +151,10 @@ class Lib_Matrix
 
     /**
      * Subtract matrix2 from matrix object on which this method is called
-     * @param Lib_Matrix $matrix2
-     * @return Lib_Matrix Note that original matrix is left unchanged
+     * @param Matrix $matrix2
+     * @return Matrix Note that original matrix is left unchanged
      */
-    public function Subtract(Lib_Matrix $matrix2)
+    public function Subtract(Matrix $matrix2)
     {
         $rows1 = $this->rows;
         $columns1 = $this->columns;
@@ -170,15 +173,15 @@ class Lib_Matrix
                         $matrix2->GetElementAt($i, $j);
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
      * Add matrix2 to matrix object that calls this method.
      * @param Model_Matrix $matrix2
-     * @return Lib_Matrix Note that original matrix is left unchanged
+     * @return Matrix Note that original matrix is left unchanged
      */
-    function Add(Lib_Matrix $matrix2)
+    function Add(Matrix $matrix2)
     {
         $rows1 = $this->rows;
         $rows2 = $matrix2->NumRows();
@@ -195,15 +198,15 @@ class Lib_Matrix
                         $matrix2->GetElementAt($i, $j);
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
      * Multiply matrix2 into matrix object that calls this method
      * @param Model_Matrix $matrix2
-     * @return Lib_Matrix Note that original matrix is left unaltered
+     * @return Matrix Note that original matrix is left unaltered
      */
-    function Multiply(Lib_Matrix $matrix2)
+    function Multiply(Matrix $matrix2)
     {
         $sum = 0;
         $rows1 = $this->rows;
@@ -225,13 +228,13 @@ class Lib_Matrix
                 }
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
      * Multiply every element of matrix on which this method is called by the scalar
      * @param object $scalar
-     * @return Lib_Matrix 
+     * @return Matrix 
      */
     public function ScalarMultiply($scalar)
     {
@@ -246,13 +249,13 @@ class Lib_Matrix
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] * $scalar;
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
      * Divide every element of matrix on which this method is called by the scalar
      * @param object $scalar
-     * @return Lib_Matrix 
+     * @return Matrix 
      */
     public function ScalarDivide($scalar)
     {
@@ -267,7 +270,7 @@ class Lib_Matrix
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] / $scalar;
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
@@ -275,7 +278,7 @@ class Lib_Matrix
      * Part of determinant expansion by minors method
      * @param int $crossX
      * @param int $crossY
-     * @return Lib_Matrix 
+     * @return Matrix 
      */
     public function GetSubMatrix($crossX, $crossY)
     {
@@ -301,7 +304,7 @@ class Lib_Matrix
                 $p++;
             }
         }
-        return new Lib_Matrix($newMatrix);
+        return new Matrix($newMatrix);
     }
 
     /**
@@ -343,7 +346,7 @@ class Lib_Matrix
 
     /**
      * Compute the transpose of matrix on which this method is called (invert rows and columns)
-     * @return Lib_Matrix 
+     * @return Matrix 
      */
     public function Transpose()
     {
@@ -357,14 +360,14 @@ class Lib_Matrix
                 $newArray[$j][$i] = $this->MainMatrix[$i][$j];
             }
         }
-        return new Lib_Matrix($newArray);
+        return new Matrix($newArray);
     }
 
     /**
      * Compute the inverse of the matrix on which this method is found (A*A(-1)=I)
      * (cofactor(a))T/(det a)
      * @link http://www.mathwords.com/i/inverse_of_a_matrix.htm
-     * @return Lib_Matrix 
+     * @return Matrix 
      */
     function Inverse()
     {
@@ -388,10 +391,8 @@ class Lib_Matrix
                 }
             }
         }
-        $cofactorMatrix = new Lib_Matrix($newMatrix);
+        $cofactorMatrix = new Matrix($newMatrix);
         return $cofactorMatrix->Transpose()
                 ->ScalarDivide($this->Determinant());
     }
 }
-
-?>

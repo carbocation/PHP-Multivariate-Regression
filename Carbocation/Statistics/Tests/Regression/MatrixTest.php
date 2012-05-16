@@ -1,6 +1,35 @@
 <?php
+/**
+ * Copyright (c)  2011 Shankar Manamalkav <nshankar@ufl.edu>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @author shankar<nshankar@ufl.edu>
+ * @author carbocation<james@carbocation.com>
+ * 
+ */
+namespace Carbocation\Statistics\Tests\Regression;
 
-class Lib_Matrixtest extends PHPUnit_Framework_TestCase
+use Carbocation\Statistics\Regression\Matrix as Matrix;
+use Carbocation\Statistics\Regression\Regression as Regression;
+
+class Matrixtest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreate2dMatrix()
     {
@@ -8,8 +37,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1,2),
             array(3,4)
         );
-        $m = new Lib_Matrix($arr);
-        $this->assertInstanceOf('Lib_Matrix', $m);
+        $m = new Matrix($arr);
+        $this->assertInstanceOf('Matrix', $m);
     }
     /**
      * test console display function to ensure 100% code coverage
@@ -20,7 +49,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1,2),
             array(3,4)
         );
-        $m = new Lib_Matrix($arr);
+        $m = new Matrix($arr);
         $m->DisplayMatrix();
     }
 
@@ -33,13 +62,13 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(2, 3),
             array(1)
         );
-        $m = new Lib_Matrix($arr);
+        $m = new Matrix($arr);
     }
 
     public function testNotSquare()
     {
         $arr = array(array(1, 2), array(3, 4), array(5, 6));
-        $m = new Lib_Matrix($arr);
+        $m = new Matrix($arr);
         $this->assertFalse($m->isSquareMatrix());
     }
 
@@ -53,8 +82,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1, 2, 3, 4),
             array(4, 5, 6, 7)
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Add($mat2);
 
         $testRet = array(array(2, 4, 6, 8), array(8, 10, 12, 14));
@@ -73,8 +102,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
         $arr2 = array(
             array(1, 2, 3)
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Add($mat2);
     }
 
@@ -88,8 +117,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1, 2, 3, 4),
             array(4, 5, 6, 7)
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Subtract($mat2);
 
         $testRet = array(array(0, 0, 0, 0), array(0, 0, 0, 0));
@@ -108,8 +137,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
         $arr2 = array(
             array(1, 2, 3)
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Subtract($mat2);
     }
 
@@ -125,8 +154,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(0, -1, 1),
             array(2, 0, 0),
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Multiply($mat2);
 
         $testRet = array(array(4, 11, -15), array(5, 7, -7));
@@ -147,8 +176,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1, 1, 0),
             array(0, -1, 1)
         );
-        $mat1 = new Lib_Matrix($arr1);
-        $mat2 = new Lib_Matrix($arr2);
+        $mat1 = new Matrix($arr1);
+        $mat2 = new Matrix($arr2);
         $ret = $mat1->Multiply($mat2);
         //the above should throw an exception!
     }
@@ -159,7 +188,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1, 2),
             array(3, 4)
         );
-        $mat1 = new Lib_Matrix($arr1);
+        $mat1 = new Matrix($arr1);
         $det = $mat1->Determinant();
         $this->assertSame(-2, $det);
     }
@@ -174,7 +203,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(3, 4),
             array(5, 6)
         );
-        $mat1 = new Lib_Matrix($arr1);
+        $mat1 = new Matrix($arr1);
         $det = $mat1->Determinant();
     }
 
@@ -184,7 +213,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(1, 2),
             array(3, 4)
         );
-        $mat1 = new Lib_Matrix($arr1);
+        $mat1 = new Matrix($arr1);
         $t = $mat1->Transpose();
         $testarr = array(array(1, 3), array(2, 4));
         $this->assertSame($t->GetInnerArray(), $testarr);
@@ -196,7 +225,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(4, 3),
             array(3, 2)
         );
-        $mat1 = new Lib_Matrix($arr1);
+        $mat1 = new Matrix($arr1);
         $t = $mat1->Inverse()->GetInnerArray();
         $exp = array(
             array(-2, 3),
@@ -215,7 +244,7 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(3, 2),
             array(4, 5)
         );
-        $mat1 = new Lib_Matrix($arr1);
+        $mat1 = new Matrix($arr1);
         $t = $mat1->Inverse()->GetInnerArray();
     }
     /**
@@ -249,9 +278,9 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
             array(40.5),
             array(2));
 
-        /* @var $reg Lib_Regression */
-        //$reg = Lib_Regression::Getinstance();
-        $reg = new Lib_Regression();
+        /* @var $reg Regression */
+        //$reg = Regression::Getinstance();
+        $reg = new Regression();
         $reg->setX($x);
         $reg->setY($y);
         $reg->Compute();    //go!
@@ -286,8 +315,8 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
      */
     public function testRegressionUsingCSV()
     {
-        /* @var $reg Lib_Regression */
-        $reg = new Lib_Regression();
+        /* @var $reg Regression */
+        $reg = new Regression();
         $reg->LoadCSV('C:\Users\Shankar\Desktop\MyReg.csv', array(0), array(1, 2, 3));
         $reg->Compute();
         $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
@@ -295,5 +324,3 @@ class Lib_Matrixtest extends PHPUnit_Framework_TestCase
     }
 
 }
-
-?>
