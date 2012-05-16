@@ -303,8 +303,9 @@ class Matrix
      */
     public function Determinant()
     {
-        if(!$this->isSquareMatrix())
+        if(!$this->isSquareMatrix()){
             throw new MatrixException("Not a square matrix!");
+        }
         $rows = $this->rows;
         $columns = $this->columns;
         $determinant = 0;
