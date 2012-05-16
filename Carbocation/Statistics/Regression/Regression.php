@@ -141,7 +141,7 @@ class Regression
         $this->y = $yarray;
     }
 
-    private function GetArray($rawData, $cols, $r, $incIntercept = false)
+    protected function GetArray($rawData, $cols, $r, $incIntercept = false)
     {
         $arrIdx = "";
         $z = 0;
@@ -237,7 +237,7 @@ class Regression
      * @param float $deg_F
      * @return float 
      */
-    private function Student_PValue($t_stat, $deg_F)
+    protected function Student_PValue($t_stat, $deg_F)
     {
         $t_stat = abs($t_stat);
         $mw = $t_stat / sqrt($deg_F);
@@ -262,7 +262,7 @@ class Regression
      * @param float $b
      * @return float 
      */
-    private function statcom($q, $i, $j, $b)
+    protected function statcom($q, $i, $j, $b)
     {
         $zz = 1;
         $z = $zz;

@@ -45,7 +45,7 @@ class Matrix
      *
      * @param array $matrix - The array
      */
-    function __construct($matrix)
+    public function __construct($matrix)
     {
         for($i = 0; $i < count($matrix); $i++){
             for($j = 0; $j < count($matrix[$i]); $j++){
@@ -66,7 +66,7 @@ class Matrix
      *
      * @return bool
      */
-    private function isValidMatrix()
+    protected function isValidMatrix()
     {
         for($i = 0; $i < $this->rows; $i++){
             $numCol = count($this->MainMatrix [$i]);
@@ -181,7 +181,7 @@ class Matrix
      * @param Model_Matrix $matrix2
      * @return Matrix Note that original matrix is left unchanged
      */
-    function Add(Matrix $matrix2)
+    public function Add(Matrix $matrix2)
     {
         $rows1 = $this->rows;
         $rows2 = $matrix2->NumRows();
@@ -205,7 +205,7 @@ class Matrix
      * @param Model_Matrix $matrix2
      * @return Matrix Note that original matrix is left unaltered
      */
-    function Multiply(Matrix $matrix2)
+    public function Multiply(Matrix $matrix2)
     {
         $sum = 0;
         $rows1 = $this->rows;
@@ -351,7 +351,7 @@ class Matrix
      * @link http://www.mathwords.com/i/inverse_of_a_matrix.htm
      * @return Matrix 
      */
-    function Inverse()
+    public function Inverse()
     {
         if(!$this->isSquareMatrix()){
             throw new MatrixException("Not a square matrix!");
