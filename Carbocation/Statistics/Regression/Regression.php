@@ -126,7 +126,7 @@ class Regression
             $data = fgetcsv($handle);
         }
         //get the data into array
-        while(($data = fgetcsv($handle)) !== FALSE){
+        while(($data = fgetcsv($handle)) !== false){
             $rawData[] = array($data);
         }
         $sampleSize = count($rawData);
@@ -216,17 +216,13 @@ class Regression
     
     protected function getArray($rawData, $cols, $r, $incIntercept = false)
     {
-        $arrIdx = "";
-        $z = 0;
         $arr = array();
         if($incIntercept){
             //prepend an all 1's column for the intercept
             $arr[] = 1;
         }
         foreach($cols as $key => $val){
-            $arrIdx = '$rawData[' . $r . '][0][' . $val . '];';
-            eval("\$z = $arrIdx");
-            $arr[] = $z;
+            $arr[] = $rawData[$r][0][$val];
         }
         return $arr;
     }
