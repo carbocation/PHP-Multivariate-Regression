@@ -144,6 +144,8 @@ class Matrix
      */
     public function subtract(Matrix $matrix2)
     {
+        $newMatrix = array();
+        
         $rows1 = $this->rows;
         $columns1 = $this->columns;
 
@@ -170,10 +172,12 @@ class Matrix
      */
     public function add(Matrix $matrix2)
     {
+        $newMatrix = array();
         $rows1 = $this->rows;
         $rows2 = $matrix2->getNumRows();
         $columns1 = $this->columns;
         $columns2 = $matrix2->getNumColumns();
+        
         if(($rows1 != $rows2) || ($columns1 != $columns2)){
             throw new MatrixException('Matrices are not the same size!');
         }
@@ -194,7 +198,7 @@ class Matrix
      */
     public function multiply(Matrix $matrix2)
     {
-        $sum = 0;
+        $newMatrix = array();
         $rows1 = $this->rows;
         $columns1 = $this->columns;
 
@@ -222,6 +226,7 @@ class Matrix
      */
     public function scalarMultiply($scalar)
     {
+        $newMatrix = array();
         $rows = $this->rows;
         $columns = $this->columns;
 
@@ -241,10 +246,10 @@ class Matrix
      */
     public function scalarDivide($scalar)
     {
+        $newMatrix = array();
         $rows = $this->rows;
         $columns = $this->columns;
 
-        $newMatrix = array();
         for($i = 0; $i < $rows; $i++){
             for($j = 0; $j < $columns; $j++){
                 $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] / $scalar;
@@ -262,10 +267,10 @@ class Matrix
      */
     public function getSubMatrix($crossX, $crossY)
     {
+        $newMatrix = array();
         $rows = $this->rows;
         $columns = $this->columns;
 
-        $newMatrix = array();
         $p = 0; // submatrix row counter
         for($i = 0; $i < $rows; $i++){
             $q = 0; // submatrix col counter
@@ -321,9 +326,10 @@ class Matrix
      */
     public function transpose()
     {
+        $newArray = array();
         $rows = $this->rows;
         $columns = $this->columns;
-        $newArray = array();
+        
         for($i = 0; $i < $rows; $i++){
             for($j = 0; $j < $columns; $j++){
                 $newArray[$j][$i] = $this->MainMatrix[$i][$j];
@@ -343,10 +349,11 @@ class Matrix
         if(!$this->isSquareMatrix()){
             throw new MatrixException("Not a square matrix!");
         }
+        
+        $newMatrix = array();
         $rows = $this->rows;
         $columns = $this->columns;
-
-        $newMatrix = array();
+        
         for($i = 0; $i < $rows; $i++){
             for($j = 0; $j < $columns; $j++){
                 $subMatrix = $this->getSubMatrix($i, $j);
@@ -392,6 +399,7 @@ class Matrix
     protected function getDiagonal()
     {
         $diagonal = array();
+        
         for($i = 0; $i < $this->getNumRows(); $i++){
             for($j = 0; $j < $this->getNumColumns(); $j++){
                 if($i == $j){
