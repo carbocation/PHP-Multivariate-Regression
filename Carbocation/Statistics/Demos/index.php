@@ -39,7 +39,7 @@ $predicted = array(
 $regression = new Regression();
 $regression->setX($predictors);
 $regression->setY($predicted);
-$regression->Compute();
+$regression->exec();
 
 echo "Coefficients:" . PHP_EOL;
 print_r($regression->getCoefficients());

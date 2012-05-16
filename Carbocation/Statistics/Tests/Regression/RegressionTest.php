@@ -55,7 +55,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(3, 4)
         );
         $m = new Matrix($arr);
-        $m->DisplayMatrix();
+        $m->displayMatrix();
     }
 
     /**
@@ -89,10 +89,10 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Add($mat2);
+        $ret = $mat1->add($mat2);
 
         $testRet = array(array(2, 4, 6, 8), array(8, 10, 12, 14));
-        $this->assertSame($ret->GetInnerArray(), $testRet);
+        $this->assertSame($ret->getInnerArray(), $testRet);
     }
 
     /**
@@ -109,7 +109,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Add($mat2);
+        $ret = $mat1->add($mat2);
     }
 
     public function testSubtract()
@@ -124,10 +124,10 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Subtract($mat2);
+        $ret = $mat1->subtract($mat2);
 
         $testRet = array(array(0, 0, 0, 0), array(0, 0, 0, 0));
-        $this->assertSame($ret->GetInnerArray(), $testRet);
+        $this->assertSame($ret->getInnerArray(), $testRet);
     }
 
     /**
@@ -144,7 +144,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Subtract($mat2);
+        $ret = $mat1->subtract($mat2);
     }
 
     public function testMultiply()
@@ -161,10 +161,10 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Multiply($mat2);
+        $ret = $mat1->multiply($mat2);
 
         $testRet = array(array(4, 11, -15), array(5, 7, -7));
-        $this->assertSame($ret->GetInnerArray(), $testRet);
+        $this->assertSame($ret->getInnerArray(), $testRet);
     }
 
     /**
@@ -183,7 +183,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         );
         $mat1 = new Matrix($arr1);
         $mat2 = new Matrix($arr2);
-        $ret = $mat1->Multiply($mat2);
+        $ret = $mat1->multiply($mat2);
     }
 
     public function testDeterminant()
@@ -193,7 +193,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(3, 4)
         );
         $mat1 = new Matrix($arr1);
-        $det = $mat1->Determinant();
+        $det = $mat1->getDeterminant();
         $this->assertSame(-2, $det);
     }
 
@@ -208,7 +208,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(5, 6)
         );
         $mat1 = new Matrix($arr1);
-        $det = $mat1->Determinant();
+        $det = $mat1->getDeterminant();
     }
 
     public function testTranspose()
@@ -218,9 +218,9 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(3, 4)
         );
         $mat1 = new Matrix($arr1);
-        $t = $mat1->Transpose();
+        $t = $mat1->transpose();
         $testarr = array(array(1, 3), array(2, 4));
-        $this->assertSame($t->GetInnerArray(), $testarr);
+        $this->assertSame($t->getInnerArray(), $testarr);
     }
 
     public function testInverse()
@@ -230,7 +230,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(3, 2)
         );
         $mat1 = new Matrix($arr1);
-        $t = $mat1->Inverse()->GetInnerArray();
+        $t = $mat1->invert()->getInnerArray();
         $exp = array(
             array(-2, 3),
             array(3, -4)
@@ -249,7 +249,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(4, 5)
         );
         $mat1 = new Matrix($arr1);
-        $t = $mat1->Inverse()->GetInnerArray();
+        $t = $mat1->invert()->getInnerArray();
     }
 
     /**
@@ -288,7 +288,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         $reg = new Regression();
         $reg->setX($x);
         $reg->setY($y);
-        $reg->Compute();    //go!
+        $reg->exec();    //go!
         //all our expected values for the above dataset.
         $testSSEScalar = 447.808;
         $testSSRScalar = 1448.2166;
@@ -319,8 +319,8 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
     {
         /* @var $reg Regression */
         $reg = new Regression();
-        $reg->LoadCSV(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
-        $reg->Compute();
+        $reg->loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
+        $reg->exec();
         $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
         $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);
     }

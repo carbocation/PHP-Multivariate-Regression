@@ -115,7 +115,7 @@ class Regression
      * @param array $xcolnumbers
      * @param type $ycolnumber 
      */
-    public function LoadCSV($file, array $ycol, array $xcol, $hasHeader = true)
+    public function loadCsv($file, array $ycol, array $xcol, $hasHeader = true)
     {
         $xarray = array();
         $yarray = array();
@@ -133,15 +133,15 @@ class Regression
 
         $r = 0;
         while($r < $sampleSize){
-            $xarray[] = $this->GetArray($rawData, $xcol, $r, true);
-            $yarray[] = $this->GetArray($rawData, $ycol, $r);   //y always has 1 col!
+            $xarray[] = $this->getArray($rawData, $xcol, $r, true);
+            $yarray[] = $this->getArray($rawData, $ycol, $r);   //y always has 1 col!
             $r++;
         }
         $this->x = $xarray;
         $this->y = $yarray;
     }
 
-    protected function GetArray($rawData, $cols, $r, $incIntercept = false)
+    protected function getArray($rawData, $cols, $r, $incIntercept = false)
     {
         $arrIdx = "";
         $z = 0;
@@ -158,7 +158,7 @@ class Regression
         return $arr;
     }
 
-    public function Compute()
+    public function exec()
     {
         if((count($this->x) == 0) || (count($this->y) == 0)){
             throw new RegressionException('Please supply valid X and Y arrays');
@@ -167,13 +167,13 @@ class Regression
         $my = new Matrix($this->y);
 
         //coefficient(b) = (X'X)-1X'Y 
-        $xTx = $mx->Transpose()->Multiply($mx)->Inverse();
-        $xTy = $mx->Transpose()->Multiply($my);
+        $xTx = $mx->transpose()->multiply($mx)->invert();
+        $xTy = $mx->transpose()->multiply($my);
 
-        $coeff = $xTx->Multiply($xTy);
+        $coeff = $xTx->multiply($xTy);
 
-        $num_independent = $mx->NumColumns();   //note: intercept is included
-        $sample_size = $mx->NumRows();
+        $num_independent = $mx->getNumColumns();   //note: intercept is included
+        $sample_size = $mx->getNumRows();
         $dfTotal = $sample_size - 1;
         $dfModel = $num_independent - 1;
         $dfResidual = $dfTotal - $dfModel;
@@ -185,46 +185,46 @@ class Regression
         $um = new Matrix($u);
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
-        $SSR = $coeff->Transpose()->Multiply($mx->Transpose())->Multiply($my)
-                ->Subtract(
-                ($my->Transpose()
-                ->Multiply($um)
-                ->Multiply($um->Transpose())
-                ->Multiply($my)
-                ->ScalarDivide($sample_size))
+        $SSR = $coeff->transpose()->multiply($mx->transpose())->multiply($my)
+                ->subtract(
+                ($my->transpose()
+                ->multiply($um)
+                ->multiply($um->transpose())
+                ->multiply($my)
+                ->scalarDivide($sample_size))
         );
 
-        $SSE = $my->Transpose()->Multiply($my)->Subtract(
-                $coeff->Transpose()
-                        ->Multiply($mx->Transpose())
-                        ->Multiply($my)
+        $SSE = $my->transpose()->multiply($my)->subtract(
+                $coeff->transpose()
+                        ->multiply($mx->transpose())
+                        ->multiply($my)
         );
 
-        $SSTO = $SSR->Add($SSE);
-        $this->SSEScalar = $SSE->GetElementAt(0, 0);
-        $this->SSRScalar = $SSR->GetElementAt(0, 0);
-        $this->SSTOScalar = $SSTO->GetElementAt(0, 0);
+        $SSTO = $SSR->add($SSE);
+        $this->SSEScalar = $SSE->getElementAt(0, 0);
+        $this->SSRScalar = $SSR->getElementAt(0, 0);
+        $this->SSTOScalar = $SSTO->getElementAt(0, 0);
 
         $this->RSquare = $this->SSRScalar / $this->SSTOScalar;
 
 
         $this->F = (($this->SSRScalar / ($dfModel)) / ($this->SSEScalar / ($dfResidual)));
-        $MSE = $SSE->ScalarDivide($dfResidual);
+        $MSE = $SSE->scalarDivide($dfResidual);
         //this is a scalar.. get element
-        $e = ($MSE->GetElementAt(0, 0));
+        $e = ($MSE->getElementAt(0, 0));
 
-        $stdErr = $xTx->ScalarMultiply($e);
+        $stdErr = $xTx->scalarMultiply($e);
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements
-            $searray[] = array(sqrt($stdErr->GetElementAt($i, $i)));
+            $searray[] = array(sqrt($stdErr->getElementAt($i, $i)));
             //compute the t-statistic
-            $tstat[] = array($coeff->GetElementAt($i, 0) / $searray[$i][0]);
+            $tstat[] = array($coeff->getElementAt($i, 0) / $searray[$i][0]);
             //compute the student p-value from the t-stat
-            $pvalue[] = array($this->Student_PValue($tstat[$i][0], $dfResidual));
+            $pvalue[] = array($this->getStudentPValue($tstat[$i][0], $dfResidual));
         }
         //convert into 1-d vectors and store
         for($ctr = 0; $ctr < $num_independent; $ctr++){
-            $this->coefficients[] = $coeff->GetElementAt($ctr, 0);
+            $this->coefficients[] = $coeff->getElementAt($ctr, 0);
             $this->stderrors[] = $searray[$ctr][0];
             $this->tstats[] = $tstat[$ctr][0];
             $this->pvalues[] = $pvalue[$ctr][0];
@@ -237,7 +237,7 @@ class Regression
      * @param float $deg_F
      * @return float 
      */
-    protected function Student_PValue($t_stat, $deg_F)
+    protected function getStudentPValue($t_stat, $deg_F)
     {
         $t_stat = abs($t_stat);
         $mw = $t_stat / sqrt($deg_F);
@@ -248,9 +248,9 @@ class Regression
         $sth = sin($th);
         $cth = cos($th);
         if($deg_F % 2 == 1){
-            return 1.0 - ($th + $sth * $cth * $this->statcom($cth * $cth, 2, $deg_F - 3, -1)) / (M_PI / 2.0);
+            return 1.0 - ($th + $sth * $cth * $this->statCom($cth * $cth, 2, $deg_F - 3, -1)) / (M_PI / 2.0);
         }else{
-            return 1.0 - ($sth * $this->statcom($cth * $cth, 1, $deg_F - 3, -1));
+            return 1.0 - ($sth * $this->statCom($cth * $cth, 1, $deg_F - 3, -1));
         }
     }
 
@@ -262,7 +262,7 @@ class Regression
      * @param float $b
      * @return float 
      */
-    protected function statcom($q, $i, $j, $b)
+    protected function statCom($q, $i, $j, $b)
     {
         $zz = 1;
         $z = $zz;
