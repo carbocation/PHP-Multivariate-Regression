@@ -357,6 +357,15 @@ class Matrix
                         ->scalarDivide($this->getDeterminant());
     }
     
+    public function getTrace()
+    {
+        if(!$this->isSquareMatrix()){
+            throw new MatrixException("Not a square matrix.");
+        }
+        
+        return array_sum($this->getDiagonal());
+    }
+    
     /**
      * Is it a valid matrix?
      * 
@@ -373,6 +382,20 @@ class Matrix
             }
         }
         return true;
+    }
+    
+    protected function getDiagonal()
+    {
+        $diagonal = array();
+        for($i = 0; $i < $this->getNumRows(); $i++){
+            for($j = 0; $j < $this->getNumColumns(); $j++){
+                if($i == $j){
+                    $diagonal[] = $this->MainMatrix[$i][$j];
+                }
+            }
+        }
+        
+        return $diagonal;
     }
 
 }

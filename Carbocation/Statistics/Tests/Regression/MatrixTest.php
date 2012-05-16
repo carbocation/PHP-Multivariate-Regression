@@ -251,4 +251,33 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $t = $mat1->invert()->getInnerArray();
     }
     
+    public function testTrace()
+    {
+        $arr = array(
+            array(1,2,3),
+            array(4,5,6),
+            array(7,8,9),
+        );
+        $mat = new Matrix($arr);
+        $t = $mat->getTrace();
+        
+        $this->assertSame(15, $t);
+    }
+    
+    /**
+     * @expectedException Carbocation\Statistics\Regression\MatrixException
+     */
+    public function testTraceException()
+    {
+        $arr = array(
+            array(1,2,3),
+            array(4,5,6),
+            array(7,8,9),
+            array(10,11,12),
+        );
+        $mat = new Matrix($arr);
+        $t = $mat->getTrace();
+        
+    }
+    
 }
