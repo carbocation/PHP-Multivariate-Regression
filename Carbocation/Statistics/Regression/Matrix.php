@@ -27,6 +27,8 @@
 
 namespace Carbocation\Statistics\Regression;
 
+use Carbocation\Statistics\Regression\MatrixException;
+
 class Matrix
 {
 
@@ -53,7 +55,7 @@ class Matrix
         $this->columns = count($this->MainMatrix[0]);
         if (!$this->isValidMatrix())
         {
-            throw new Exception("Invalid matrix");
+            throw new MatrixException("Invalid matrix");
         }
     }
 
@@ -163,7 +165,7 @@ class Matrix
         $columns2 = $matrix2->NumColumns();
 
         if (($rows1 != $rows2) || ($columns1 != $columns2))
-            throw new Exception('Matrices are not the same size!');
+            throw new MatrixException('Matrices are not the same size!');
 
         for ($i = 0; $i < $rows1; $i++)
         {
@@ -188,7 +190,7 @@ class Matrix
         $columns1 = $this->columns;
         $columns2 = $matrix2->NumColumns();
         if (($rows1 != $rows2) || ($columns1 != $columns2))
-            throw new Exception('Matrices are not the same size!');
+            throw new MatrixException('Matrices are not the same size!');
 
         for ($i = 0; $i < $rows1; $i++)
         {
@@ -215,7 +217,7 @@ class Matrix
         $columns2 = $matrix2->NumColumns();
         $rows2 = $matrix2->NumRows();
         if ($columns1 != $rows2)
-            throw new Exception('Incompatible matrix types supplied');
+            throw new MatrixException('Incompatible matrix types supplied');
         for ($i = 0; $i < $rows1; $i++)
         {
             for ($j = 0; $j < $columns2; $j++)
@@ -315,7 +317,7 @@ class Matrix
     public function Determinant()
     {
         if (!$this->isSquareMatrix())
-            throw new Exception("Not a square matrix!");
+            throw new MatrixException("Not a square matrix!");
         $rows = $this->rows;
         $columns = $this->columns;
         $determinant = 0;
@@ -372,7 +374,7 @@ class Matrix
     function Inverse()
     {
         if (!$this->isSquareMatrix())
-            throw new Exception("Not a square matrix!");
+            throw new MatrixException("Not a square matrix!");
         $rows = $this->rows;
         $columns = $this->columns;
 

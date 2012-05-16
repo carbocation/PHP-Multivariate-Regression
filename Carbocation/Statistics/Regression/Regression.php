@@ -30,7 +30,7 @@
 
 namespace Carbocation\Statistics\Regression;
 
-#use \Carbocation\Statistics\Regression\Matrix;
+use Carbocation\Statistics\Regression\Matrix;
 
 class Regression
 {
