@@ -60,24 +60,6 @@ class Matrix
     }
 
     /**
-     * Is it a valid matrix?
-     * 
-     * Returns 'False' if it is not a rectangular matrix
-     *
-     * @return bool
-     */
-    protected function isValidMatrix()
-    {
-        for($i = 0; $i < $this->rows; $i++){
-            $numCol = count($this->MainMatrix [$i]);
-            if($this->columns != $numCol){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Display the matrix
      * Formatted display of matrix for debugging.
      */
@@ -373,6 +355,24 @@ class Matrix
         $cofactorMatrix = new Matrix($newMatrix);
         return $cofactorMatrix->transpose()
                         ->scalarDivide($this->getDeterminant());
+    }
+    
+    /**
+     * Is it a valid matrix?
+     * 
+     * Returns 'False' if it is not a rectangular matrix
+     *
+     * @return bool
+     */
+    protected function isValidMatrix()
+    {
+        for($i = 0; $i < $this->rows; $i++){
+            $numCol = count($this->MainMatrix [$i]);
+            if($this->columns != $numCol){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

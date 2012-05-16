@@ -141,23 +141,6 @@ class Regression
         $this->y = $yarray;
     }
 
-    protected function getArray($rawData, $cols, $r, $incIntercept = false)
-    {
-        $arrIdx = "";
-        $z = 0;
-        $arr = array();
-        if($incIntercept){
-            //prepend an all 1's column for the intercept
-            $arr[] = 1;
-        }
-        foreach($cols as $key => $val){
-            $arrIdx = '$rawData[' . $r . '][0][' . $val . '];';
-            eval("\$z = $arrIdx");
-            $arr[] = $z;
-        }
-        return $arr;
-    }
-
     public function exec()
     {
         if((count($this->x) == 0) || (count($this->y) == 0)){
@@ -229,6 +212,23 @@ class Regression
             $this->tstats[] = $tstat[$ctr][0];
             $this->pvalues[] = $pvalue[$ctr][0];
         }
+    }
+    
+    protected function getArray($rawData, $cols, $r, $incIntercept = false)
+    {
+        $arrIdx = "";
+        $z = 0;
+        $arr = array();
+        if($incIntercept){
+            //prepend an all 1's column for the intercept
+            $arr[] = 1;
+        }
+        foreach($cols as $key => $val){
+            $arrIdx = '$rawData[' . $r . '][0][' . $val . '];';
+            eval("\$z = $arrIdx");
+            $arr[] = $z;
+        }
+        return $arr;
     }
 
     /**
