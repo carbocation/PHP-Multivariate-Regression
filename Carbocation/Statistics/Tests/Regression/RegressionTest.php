@@ -32,7 +32,7 @@ use Carbocation\Statistics\Regression\Matrix;
 use Carbocation\Statistics\Regression\Regression;
 use Carbocation\Statistics\Regression\MatrixException;
 
-class Matrixtest extends \PHPUnit_Framework_TestCase
+class RegressionTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCanCreate2dMatrix()
