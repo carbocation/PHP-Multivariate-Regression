@@ -48,14 +48,19 @@ class Regression
     protected $pvalues;     //p values array
     protected $x = array();
     protected $y = array();
-
-    //implement singleton
-    /**
-     * An instance of this class (singleton)
-     * @var Regression 
+    
+    /*
+     * Prepend a column of 1s to the matrix of independent variables?
      */
-    public function setX($x)
+    protected $generateIntercept = true;
+    
+    public function setX(array $x)
     {
+        if($this->generateIntercept){
+            foreach($x AS $row => $element){
+                array_unshift($x[$row], 1);
+            }
+        }
         $this->x = $x;
     }
 
@@ -133,12 +138,12 @@ class Regression
 
         $r = 0;
         while($r < $sampleSize){
-            $xarray[] = $this->getArray($rawData, $xcol, $r, true);
+            $xarray[] = $this->getArray($rawData, $xcol, $r);
             $yarray[] = $this->getArray($rawData, $ycol, $r);   //y always has 1 col!
             $r++;
         }
-        $this->x = $xarray;
-        $this->y = $yarray;
+        $this->setX($xarray);
+        $this->setY($yarray);
     }
 
     public function exec()
@@ -214,13 +219,9 @@ class Regression
         }
     }
     
-    protected function getArray($rawData, $cols, $r, $incIntercept = false)
+    protected function getArray($rawData, $cols, $r)
     {
         $arr = array();
-        if($incIntercept){
-            //prepend an all 1's column for the intercept
-            $arr[] = 1;
-        }
         foreach($cols as $key => $val){
             $arr[] = $rawData[$r][0][$val];
         }

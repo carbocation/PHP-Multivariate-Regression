@@ -38,19 +38,22 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegressionPassingArrays()
     {
-        //independent vars.. note 1 has been added to first column for computing
-        //intercept
+        /*
+         * independent vars.. Note that 1 has *not* been added to the 
+         * first column for computing the intercept. This is done internally 
+         * and automatically for the independent variables.
+         */
         $x = array(
-            array(1, 8, 2),
-            array(1, 40.5, 24.5),
-            array(1, 4.5, .5),
-            array(1, .5, 2),
-            array(1, 4.5, 4.5),
-            array(1, 7, 8),
-            array(1, 24.5, 40.5),
-            array(1, 4.5, 2),
-            array(1, 32, 24.5),
-            array(1, .5, 4.5),
+            array(8, 2),
+            array(40.5, 24.5),
+            array(4.5, .5),
+            array(.5, 2),
+            array(4.5, 4.5),
+            array(7, 8),
+            array(24.5, 40.5),
+            array(4.5, 2),
+            array(32, 24.5),
+            array(.5, 4.5),
         );
         //dependent matrix..note it is a 2d array
         $y = array(array(4.5),
