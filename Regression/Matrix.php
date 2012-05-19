@@ -221,7 +221,7 @@ class Matrix
                 return $element1 - $element2;
                 break;
             case '/':
-                return $element1 - $element2;
+                return $element1 / $element2;
                 break;
             default:
                 throw new MatrixException('Invalid elemental operator specified');
