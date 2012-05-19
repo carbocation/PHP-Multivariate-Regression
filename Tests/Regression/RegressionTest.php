@@ -26,9 +26,9 @@
  * 
  */
 
-namespace Carbocation\Statistics\Tests\Regression;
+namespace Tests\Regression;
 
-use Carbocation\Statistics\Regression\Regression;
+use Regression\Regression;
 
 class RegressionTest extends \PHPUnit_Framework_TestCase
 {

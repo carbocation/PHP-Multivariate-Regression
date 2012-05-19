@@ -17,7 +17,7 @@ spl_autoload_register(function($classToInclude) {
     $fileName = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
 
 	// the project's root directory
-	$dir = dirname(dirname(__DIR__));
+	$dir = __DIR__;
     
     // look for a source file
     $src = $dir 

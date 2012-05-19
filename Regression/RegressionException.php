@@ -1,5 +1,5 @@
 <?php
-namespace Carbocation\Statistics\Regression;
+namespace Regression;
 
 /**
  * Supports testing

@@ -2,7 +2,7 @@
 
 require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
-use Carbocation\Statistics\Regression\Regression;
+use Regression\Regression;
 
 $predictors = array(
     array(0,3,4),
