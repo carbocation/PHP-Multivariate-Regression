@@ -47,13 +47,16 @@ class Matrix
      */
     public function __construct($matrix)
     {
-        for($i = 0; $i < count($matrix); $i++){
+        $numRows = count($matrix);
+        $numCols = count($matrix[0]);
+        
+        for($i = 0; $i < $numRows; $i++){
             for($j = 0; $j < count($matrix[$i]); $j++){
                 $this->MainMatrix[$i][$j] = $matrix[$i][$j];
             }
         }
-        $this->rows = count($this->MainMatrix);
-        $this->columns = count($this->MainMatrix[0]);
+        $this->rows = $numRows;
+        $this->columns = $numCols;
         if(!$this->isValidMatrix()){
             throw new MatrixException("Invalid matrix");
         }
