@@ -24,6 +24,7 @@
  * Simple matrix manipulation library
  *
  * @author shankar<nshankar@ufl.edu>
+ * @author James Pirruccello <james@carbocation.com>
  */
 
 namespace Regression;

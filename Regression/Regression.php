@@ -25,7 +25,7 @@
  * y=a+b1x1+b2x2+b3x3...
  *
  * @author shankar<nshankar@ufl.edu>
- * @author carbocation<james@carbocation.com>
+ * @author James Pirruccello <james@carbocation.com>
  * 
  */
 
