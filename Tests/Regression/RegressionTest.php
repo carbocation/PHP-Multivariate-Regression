@@ -28,6 +28,7 @@
 
 namespace Tests\Regression;
 
+use Regression\CsvImport;
 use Regression\Regression;
 
 class RegressionTest extends \PHPUnit_Framework_TestCase
@@ -68,7 +69,6 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             array(2));
 
         /* @var $reg Regression */
-        //$reg = Regression::Getinstance();
         $reg = new Regression();
         $reg->setX($x);
         $reg->setY($y);
@@ -103,7 +103,9 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
     {
         /* @var $reg Regression */
         $reg = new Regression();
-        $reg->loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
+        $inputs = CsvImport::loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
+        $reg->setX($inputs['x']);
+        $reg->setY($inputs['y']);
         $reg->exec();
         $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
         $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);

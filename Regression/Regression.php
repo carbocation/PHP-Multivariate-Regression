@@ -114,38 +114,6 @@ class Regression
         return $this->pvalues;
     }
 
-    /**
-     * @example $reg->loadCSV('abc.csv',array(0), array(1,2,3));
-     * @param type $file
-     * @param array $xcolnumbers
-     * @param type $ycolnumber 
-     */
-    public function loadCsv($file, array $ycol, array $xcol, $hasHeader = true)
-    {
-        $xarray = array();
-        $yarray = array();
-        $handle = fopen($file, "r");
-
-        //if first row has headers.. ignore
-        if($hasHeader){
-            $data = fgetcsv($handle);
-        }
-        //get the data into array
-        while(($data = fgetcsv($handle)) !== false){
-            $rawData[] = array($data);
-        }
-        $sampleSize = count($rawData);
-
-        $r = 0;
-        while($r < $sampleSize){
-            $xarray[] = $this->getArray($rawData, $xcol, $r);
-            $yarray[] = $this->getArray($rawData, $ycol, $r);   //y always has 1 col!
-            $r++;
-        }
-        $this->setX($xarray);
-        $this->setY($yarray);
-    }
-
     public function exec()
     {
         if((count($this->x) == 0) || (count($this->y) == 0)){
@@ -217,15 +185,6 @@ class Regression
             $this->tstats[] = $tstat[$ctr][0];
             $this->pvalues[] = $pvalue[$ctr][0];
         }
-    }
-    
-    protected function getArray($rawData, $cols, $r)
-    {
-        $arr = array();
-        foreach($cols as $key => $val){
-            $arr[] = $rawData[$r][0][$val];
-        }
-        return $arr;
     }
 
     /**
