@@ -4,7 +4,8 @@
  * CsvImport converts a CSV to a set of arrays suitable for use in 
  * Regression. 
  *
- * @author jamespirruccello
+ * @author shankar<nshankar@ufl.edu>
+ * @author James Pirruccello <james@carbocation.com>
  */
 
 namespace Regression;
