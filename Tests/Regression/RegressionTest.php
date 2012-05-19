@@ -33,6 +33,21 @@ use Regression\Regression;
 
 class RegressionTest extends \PHPUnit_Framework_TestCase
 {
+    
+    /**
+     * @link http://davidmlane.com/hyperstat/prediction.html
+     */
+    public function testRegressionUsingCSV()
+    {
+        /* @var $reg Regression */
+        $reg = new Regression();
+        $inputs = CsvImport::loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
+        $reg->setX($inputs['x']);
+        $reg->setY($inputs['y']);
+        $reg->exec();
+        $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
+        $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);
+    }
 
     /**
      * Tally using attached excel workbook  - It computes regression using excel
@@ -94,21 +109,6 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($testStdErr, $reg->getStandardError(), '', .01);
         $this->assertEquals($testTstats, $reg->getTStats(), '', .01);
         $this->assertEquals($testPValues, $reg->getPValues(), '', .01);
-    }
-
-    /**
-     * @link http://davidmlane.com/hyperstat/prediction.html
-     */
-    public function testRegressionUsingCSV()
-    {
-        /* @var $reg Regression */
-        $reg = new Regression();
-        $inputs = CsvImport::loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
-        $reg->setX($inputs['x']);
-        $reg->setY($inputs['y']);
-        $reg->exec();
-        $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
-        $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);
     }
 
 }
