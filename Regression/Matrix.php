@@ -148,25 +148,7 @@ class Matrix
      */
     public function subtract(Matrix $matrix2)
     {
-        $newMatrix = array();
-        
-        $rows1 = $this->rows;
-        $columns1 = $this->columns;
-
-        $rows2 = $matrix2->getNumRows();
-        $columns2 = $matrix2->getNumColumns();
-
-        if(($rows1 != $rows2) || ($columns1 != $columns2)){
-            throw new MatrixException('Matrices are not the same size!');
-        }
-
-        for($i = 0; $i < $rows1; $i++){
-            for($j = 0; $j < $columns1; $j++){
-                $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] -
-                        $matrix2->getEntry($i, $j);
-            }
-        }
-        return new Matrix($newMatrix);
+        return $this->elementIterator($this, $matrix2, '-');
     }
 
     /**
@@ -176,8 +158,37 @@ class Matrix
      */
     public function add(Matrix $matrix2)
     {
+        return $this->elementIterator($this, $matrix2, '+');
+    }
+    
+    /**
+     * Multiply each element of this matrix by the corresponding element 
+     * of matrix2
+     * @param Matrix $matrix2
+     * @return \Regression\Matrix
+     * @throws MatrixException 
+     */
+    public function elementMultiply(Matrix $matrix2)
+    {
+        return $this->elementIterator($this, $matrix2, '*');
+    }
+    
+    /**
+     * Divide each element of this matrix by the corresponding element 
+     * of matrix2
+     * @param Matrix $matrix2
+     * @return \Regression\Matrix
+     * @throws MatrixException 
+     */
+    public function elementDivide(Matrix $matrix2)
+    {
+        return $this->elementIterator($this, $matrix2, '/');
+    }
+    
+    protected function elementIterator($matrix1, $matrix2, $operator)
+    {
         $newMatrix = array();
-        $rows1 = $this->rows;
+        $rows1 = $matrix1->rows;
         $rows2 = $matrix2->getNumRows();
         $columns1 = $this->columns;
         $columns2 = $matrix2->getNumColumns();
@@ -188,11 +199,33 @@ class Matrix
 
         for($i = 0; $i < $rows1; $i++){
             for($j = 0; $j < $columns1; $j++){
-                $newMatrix[$i][$j] = $this->MainMatrix[$i][$j] +
-                        $matrix2->getEntry($i, $j);
+                $newMatrix[$i][$j] = $this->elementOperator(
+                        $matrix1->MainMatrix[$i][$j],
+                        $matrix2->getEntry($i, $j),
+                        $operator);
             }
         }
         return new Matrix($newMatrix);
+    }
+    
+    protected function elementOperator($element1, $element2, $operator)
+    {
+        switch($operator){
+            case '*':
+                return $element1 * $element2;
+                break;
+            case '+':
+                return $element1 + $element2;
+                break;
+            case '-':
+                return $element1 - $element2;
+                break;
+            case '/':
+                return $element1 - $element2;
+                break;
+            default:
+                throw new MatrixException('Invalid elemental operator specified');
+        }
     }
 
     /**
