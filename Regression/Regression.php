@@ -127,7 +127,7 @@ class Regression
         $XtY = $mX->transpose()->multiply($mY);
 
         $coeff = $XtXPrime->multiply($XtY);
-
+        
         $num_independent = $mX->getNumColumns();   //note: intercept is included
         $sample_size = $mX->getNumRows();
         $dfTotal = $sample_size - 1;
@@ -141,7 +141,7 @@ class Regression
         
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
-        $SSR = $coeff
+        $this->SSRScalar = $coeff
                 ->transpose()
                 ->multiply($mX->transpose())
                 ->multiply($mY)
@@ -150,28 +150,24 @@ class Regression
                         ->multiply($um)
                         ->multiply($um->transpose())
                         ->multiply($mY)
-                        ->scalarDivide($sample_size));
+                        ->scalarDivide($sample_size))
+                ->getEntry(0, 0);
+        
+        $this->SSEScalar = $mY
+                ->transpose()
+                ->multiply($mY)
+                ->subtract(
+                        $coeff->transpose()
+                                ->multiply($mX->transpose())
+                                ->multiply($mY))
+                ->getEntry(0, 0);
 
-        $SSE = $mY->transpose()->multiply($mY)->subtract(
-                $coeff->transpose()
-                        ->multiply($mX->transpose())
-                        ->multiply($mY)
-        );
-
-        $SSTO = $SSR->add($SSE);
-        $this->SSEScalar = $SSE->getEntry(0, 0);
-        $this->SSRScalar = $SSR->getEntry(0, 0);
-        $this->SSTOScalar = $SSTO->getEntry(0, 0);
-
+        $this->SSTOScalar = $this->SSRScalar + $this->SSEScalar;
         $this->RSquare = $this->SSRScalar / $this->SSTOScalar;
-
-
-        $this->F = (($this->SSRScalar / ($dfModel)) / ($this->SSEScalar / ($dfResidual)));
-        $MSE = $SSE->scalarDivide($dfResidual);
-        //this is a scalar.. get element
-        $e = ($MSE->getEntry(0, 0));
-
-        $stdErr = $XtXPrime->scalarMultiply($e);
+        $this->F = ($this->SSRScalar / $dfModel) / ($this->SSEScalar / $dfResidual);
+        
+        $MSE = $this->SSEScalar / $dfResidual;
+        $stdErr = $XtXPrime->scalarMultiply($MSE);
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements of the standard errors
             $searray[] = array(sqrt($stdErr->getEntry($i, $i)));
