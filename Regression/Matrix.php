@@ -81,7 +81,7 @@ class Matrix
             for($c = 0; $c < $cols; $c++){
                 echo $this->MainMatrix[$r][$c];
             }
-            echo "\n";
+            echo PHP_EOL;
         }
     }
 

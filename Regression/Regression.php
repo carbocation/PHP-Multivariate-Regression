@@ -119,41 +119,41 @@ class Regression
         if((count($this->x) == 0) || (count($this->y) == 0)){
             throw new RegressionException('Please supply valid X and Y arrays');
         }
-        $mx = new Matrix($this->x);
-        $my = new Matrix($this->y);
+        $mX = new Matrix($this->x);
+        $mY = new Matrix($this->y);
 
-        //coefficient(b) = (X'X)-1X'Y 
-        $xTx = $mx->transpose()->multiply($mx)->invert();
-        $xTy = $mx->transpose()->multiply($my);
+        //coefficient(b) = (X'X)-1 * X'Y 
+        $XtXPrime = $mX->transpose()->multiply($mX)->invert();
+        $XtY = $mX->transpose()->multiply($mY);
 
-        $coeff = $xTx->multiply($xTy);
+        $coeff = $XtXPrime->multiply($XtY);
 
-        $num_independent = $mx->getNumColumns();   //note: intercept is included
-        $sample_size = $mx->getNumRows();
+        $num_independent = $mX->getNumColumns();   //note: intercept is included
+        $sample_size = $mX->getNumRows();
         $dfTotal = $sample_size - 1;
         $dfModel = $num_independent - 1;
         $dfResidual = $dfTotal - $dfModel;
-        //create unit vector..
-        for($ctr = 0; $ctr < $sample_size; $ctr++){
-            $u[] = array(1);
-        }
-
-        $um = new Matrix($u);
+        
+        /*
+         * Create the unit vector, one row per sample
+         */
+        $um = new Matrix(array_fill(0, $sample_size, array(1)));
+        
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
-        $SSR = $coeff->transpose()->multiply($mx->transpose())->multiply($my)
+        $SSR = $coeff->transpose()->multiply($mX->transpose())->multiply($mY)
                 ->subtract(
-                ($my->transpose()
+                ($mY->transpose()
                 ->multiply($um)
                 ->multiply($um->transpose())
-                ->multiply($my)
+                ->multiply($mY)
                 ->scalarDivide($sample_size))
         );
 
-        $SSE = $my->transpose()->multiply($my)->subtract(
+        $SSE = $mY->transpose()->multiply($mY)->subtract(
                 $coeff->transpose()
-                        ->multiply($mx->transpose())
-                        ->multiply($my)
+                        ->multiply($mX->transpose())
+                        ->multiply($mY)
         );
 
         $SSTO = $SSR->add($SSE);
@@ -169,7 +169,7 @@ class Regression
         //this is a scalar.. get element
         $e = ($MSE->getEntry(0, 0));
 
-        $stdErr = $xTx->scalarMultiply($e);
+        $stdErr = $XtXPrime->scalarMultiply($e);
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements
             $searray[] = array(sqrt($stdErr->getEntry($i, $i)));
