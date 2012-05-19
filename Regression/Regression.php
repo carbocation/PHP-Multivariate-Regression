@@ -141,14 +141,16 @@ class Regression
         
         //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
         //MSE = SSE/(df)
-        $SSR = $coeff->transpose()->multiply($mX->transpose())->multiply($mY)
-                ->subtract(
-                ($mY->transpose()
-                ->multiply($um)
-                ->multiply($um->transpose())
+        $SSR = $coeff
+                ->transpose()
+                ->multiply($mX->transpose())
                 ->multiply($mY)
-                ->scalarDivide($sample_size))
-        );
+                ->subtract(
+                        $mY->transpose()
+                        ->multiply($um)
+                        ->multiply($um->transpose())
+                        ->multiply($mY)
+                        ->scalarDivide($sample_size));
 
         $SSE = $mY->transpose()->multiply($mY)->subtract(
                 $coeff->transpose()
@@ -171,19 +173,18 @@ class Regression
 
         $stdErr = $XtXPrime->scalarMultiply($e);
         for($i = 0; $i < $num_independent; $i++){
-            //get the diagonal elements
+            //get the diagonal elements of the standard errors
             $searray[] = array(sqrt($stdErr->getEntry($i, $i)));
             //compute the t-statistic
             $tstat[] = array($coeff->getEntry($i, 0) / $searray[$i][0]);
             //compute the student p-value from the t-stat
             $pvalue[] = array($this->getStudentPValue($tstat[$i][0], $dfResidual));
-        }
-        //convert into 1-d vectors and store
-        for($ctr = 0; $ctr < $num_independent; $ctr++){
-            $this->coefficients[] = $coeff->getEntry($ctr, 0);
-            $this->stderrors[] = $searray[$ctr][0];
-            $this->tstats[] = $tstat[$ctr][0];
-            $this->pvalues[] = $pvalue[$ctr][0];
+            
+            //convert into 1-d vectors and store
+            $this->coefficients[] = $coeff->getEntry($i, 0);
+            $this->stderrors[] = $searray[$i][0];
+            $this->tstats[] = $tstat[$i][0];
+            $this->pvalues[] = $pvalue[$i][0];
         }
     }
 
