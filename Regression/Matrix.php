@@ -185,7 +185,7 @@ class Matrix
         return $this->elementIterator($this, $matrix2, '/');
     }
     
-    protected function elementIterator($matrix1, $matrix2, $operator)
+    protected function elementIterator(Matrix $matrix1, Matrix $matrix2, $operator)
     {
         $newMatrix = array();
         $rows1 = $matrix1->rows;
