@@ -46,6 +46,7 @@ class Regression
     protected $stderrors;    //standard errror array
     protected $tstats;     //t statistics array
     protected $pvalues;     //p values array
+    protected $covariance; //covariance matrix
     protected $x = array();
     protected $y = array();
     
@@ -121,12 +122,23 @@ class Regression
         }
         $mX = new Matrix($this->x);
         $mY = new Matrix($this->y);
-
-        //coefficient(b) = (X'X)-1 * X'Y 
+        
+        //(X'X)-1
         $XtXPrime = $mX->transpose()->multiply($mX)->invert();
+        
+        //X'Y
         $XtY = $mX->transpose()->multiply($mY);
-
+        
+        //coefficients = b = (X'X)-1 X'Y 
         $coeff = $XtXPrime->multiply($XtY);
+        
+        //Generate predictions
+        // Xb
+        $mPredictions = $mX->multiply($coeff);
+        
+        //Generate b'X'Y, which we will reuse
+        // b'X'Y = (Xb)'Y = (predictions)'Y
+        $btXtY = $mPredictions->transpose()->multiply($mY);
         
         $num_independent = $mX->getNumColumns();   //note: intercept is included
         $sample_size = $mX->getNumRows();
@@ -139,12 +151,8 @@ class Regression
          */
         $um = new Matrix(array_fill(0, $sample_size, array(1)));
         
-        //SSR = b(t)X(t)Y - (Y(t)UU(T)Y)/n        
-        //MSE = SSE/(df)
-        $this->SSRScalar = $coeff
-                ->transpose()
-                ->multiply($mX->transpose())
-                ->multiply($mY)
+        //SSR = b'X'Y - (Y'U(U')Y)/n
+        $this->SSRScalar = $btXtY
                 ->subtract(
                         $mY->transpose()
                         ->multiply($um)
@@ -153,24 +161,24 @@ class Regression
                         ->scalarDivide($sample_size))
                 ->getEntry(0, 0);
         
+        //SSE = Y'Y - b'X'Y
         $this->SSEScalar = $mY
                 ->transpose()
                 ->multiply($mY)
-                ->subtract(
-                        $coeff->transpose()
-                                ->multiply($mX->transpose())
-                                ->multiply($mY))
+                ->subtract($btXtY)
                 ->getEntry(0, 0);
 
         $this->SSTOScalar = $this->SSRScalar + $this->SSEScalar;
         $this->RSquare = $this->SSRScalar / $this->SSTOScalar;
         $this->F = ($this->SSRScalar / $dfModel) / ($this->SSEScalar / $dfResidual);
         
+        //MSE = SSE/(df)
         $MSE = $this->SSEScalar / $dfResidual;
-        $stdErr = $XtXPrime->scalarMultiply($MSE);
+        $this->covariance = $XtXPrime->scalarMultiply($MSE);
+        
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements of the standard errors
-            $searray[] = array(sqrt($stdErr->getEntry($i, $i)));
+            $searray[] = array(sqrt($this->covariance->getEntry($i, $i)));
             //compute the t-statistic
             $tstat[] = array($coeff->getEntry($i, 0) / $searray[$i][0]);
             //compute the student p-value from the t-stat
@@ -182,6 +190,40 @@ class Regression
             $this->tstats[] = $tstat[$i][0];
             $this->pvalues[] = $pvalue[$i][0];
         }
+    }
+    
+    /**
+     * Calculate the standard error for each predicted observation, 
+     * given the covariance matrix.
+     * 
+     * @return array One row per observation 
+     */
+    public function getPredictionVariance()
+    {
+        $predictionVariances = array();
+        
+        $unitCol = new Matrix(array_fill(0, $this->covariance->getNumColumns(), array(1)));
+        $unitRow = new Matrix(array_fill(0, $this->covariance->getNumRows(), array(1)));
+        
+        foreach($this->x AS $k => $v){
+            $currentRowX = new Matrix(array($v));
+            
+            //Multiply the elements of the covariance matrix by the square of 
+            //the predictor matrix on an elemental basis
+            $rowVarianceMatrix = $this->covariance
+                    ->elementMultiply($currentRowX
+                            ->transpose()
+                            ->multiply($currentRowX));
+            
+            //Get the sum of $predictionVariances via matrix math with unit vectors
+            $predictionVariances[$k] = $unitRow
+                    ->transpose()
+                    ->multiply($rowVarianceMatrix)
+                    ->multiply($unitCol)
+                    ->getEntry(0, 0);
+        }
+        
+        return $predictionVariances;
     }
 
     /**
