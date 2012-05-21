@@ -44,16 +44,25 @@ class Matrix
      * 
      * Initialize the Matrix object. Throw an exception if jagged array is passed.
      *
-     * @param array $matrix - The array
+     * @param array $array - The array
      */
-    public function __construct($matrix)
+    public function __construct($array)
     {
-        $numRows = count($matrix);
-        $numCols = count($matrix[0]);
+        if(!is_array($array)){
+            throw new MatrixException('Please provide an array of arrays.');
+        }
+        
+        if(!is_array($array[0])){
+            throw new MatrixException('Please provide an array of arrays.');
+        }
+        
+        $numRows = count($array);
+        $numCols = count($array[0]);
         
         for($i = 0; $i < $numRows; $i++){
-            for($j = 0; $j < count($matrix[$i]); $j++){
-                $this->MainMatrix[$i][$j] = $matrix[$i][$j];
+            //Do this count on every row to check for jagged matrices
+            for($j = 0; $j < count($array[$i]); $j++){
+                $this->MainMatrix[$i][$j] = $array[$i][$j];
             }
         }
         $this->rows = $numRows;
@@ -185,49 +194,6 @@ class Matrix
         return $this->elementIterator($this, $matrix2, '/');
     }
     
-    protected function elementIterator(Matrix $matrix1, Matrix $matrix2, $operator)
-    {
-        $newMatrix = array();
-        $rows1 = $matrix1->rows;
-        $rows2 = $matrix2->getNumRows();
-        $columns1 = $this->columns;
-        $columns2 = $matrix2->getNumColumns();
-        
-        if(($rows1 != $rows2) || ($columns1 != $columns2)){
-            throw new MatrixException('Matrices are not the same size!');
-        }
-
-        for($i = 0; $i < $rows1; $i++){
-            for($j = 0; $j < $columns1; $j++){
-                $newMatrix[$i][$j] = $this->elementOperator(
-                        $matrix1->MainMatrix[$i][$j],
-                        $matrix2->getEntry($i, $j),
-                        $operator);
-            }
-        }
-        return new Matrix($newMatrix);
-    }
-    
-    protected function elementOperator($element1, $element2, $operator)
-    {
-        switch($operator){
-            case '*':
-                return $element1 * $element2;
-                break;
-            case '+':
-                return $element1 + $element2;
-                break;
-            case '-':
-                return $element1 - $element2;
-                break;
-            case '/':
-                return $element1 / $element2;
-                break;
-            default:
-                throw new MatrixException('Invalid elemental operator specified');
-        }
-    }
-
     /**
      * Multiply matrix2 into matrix object that calls this method
      * @param Model_Matrix $matrix2
@@ -413,6 +379,49 @@ class Matrix
         }
         
         return array_sum($this->getDiagonal());
+    }
+    
+    protected function elementIterator(Matrix $matrix1, Matrix $matrix2, $operator)
+    {
+        $newMatrix = array();
+        $rows1 = $matrix1->rows;
+        $rows2 = $matrix2->getNumRows();
+        $columns1 = $this->columns;
+        $columns2 = $matrix2->getNumColumns();
+        
+        if(($rows1 != $rows2) || ($columns1 != $columns2)){
+            throw new MatrixException('Matrices are not the same size!');
+        }
+
+        for($i = 0; $i < $rows1; $i++){
+            for($j = 0; $j < $columns1; $j++){
+                $newMatrix[$i][$j] = $this->elementOperator(
+                        $matrix1->MainMatrix[$i][$j],
+                        $matrix2->getEntry($i, $j),
+                        $operator);
+            }
+        }
+        return new Matrix($newMatrix);
+    }
+    
+    protected function elementOperator($element1, $element2, $operator)
+    {
+        switch($operator){
+            case '*':
+                return $element1 * $element2;
+                break;
+            case '+':
+                return $element1 + $element2;
+                break;
+            case '-':
+                return $element1 - $element2;
+                break;
+            case '/':
+                return $element1 / $element2;
+                break;
+            default:
+                throw new MatrixException('Invalid elemental operator specified');
+        }
     }
     
     /**
