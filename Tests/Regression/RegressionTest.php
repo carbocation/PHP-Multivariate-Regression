@@ -30,6 +30,7 @@ namespace Tests\Regression;
 
 use Regression\CsvImport;
 use Regression\Regression;
+use Regression\Matrix;
 
 class RegressionTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,7 +46,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         $reg->setX($inputs['x']);
         $reg->setY($inputs['y']);
         $reg->exec();
-        $testCoeff = array(-0.1533, 0.3764, 0.0012, 0.0227);
+        $testCoeff = new Matrix(array(array(-0.1533, 0.3764, 0.0012, 0.0227)));
         $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);
         $testPredictionStandardErrors = array(
             0.0038498088711814,
@@ -149,7 +150,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
             0.0094137632808407,
             0.020011163777876,
         );
-        $this->assertEquals($testPredictionStandardErrors, $reg->getPredictionVariance(), '', 0.01);
+        $this->assertEquals($testPredictionStandardErrors, $reg->computePredictionVariances(), '', 0.01);
     }
 
     /**
@@ -197,7 +198,7 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         $testSSTOScalar = 1896.025;
         $testRsquare = 0.76381;
         $testF = 11.3190;
-        $testCoeff = array(1.564, 0.3787, 0.5747);
+        $testCoeff = new Matrix(array(array(1.564, 0.3787, 0.5747)));
         $testStdErr = array(3.4901, 0.3279, 0.34303);
         $testTstats = array(0.4483, 1.1546, 1.6754);
         $testPValues = array(0.6674, 0.2861, 0.1377);
