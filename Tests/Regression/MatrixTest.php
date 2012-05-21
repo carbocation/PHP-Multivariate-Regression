@@ -267,6 +267,24 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Regression\MatrixException
      */
+    public function testNonArrayException()
+    {
+        $mat = new Matrix(5);
+        
+    }
+    
+    /**
+     * @expectedException Regression\MatrixException
+     */
+    public function testNonArrayOfArraysException()
+    {
+        $mat = new Matrix(array(5));
+        
+    }
+    
+    /**
+     * @expectedException Regression\MatrixException
+     */
     public function testTraceException()
     {
         $arr = array(
@@ -330,6 +348,34 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $o = new Matrix($arr2);
         
         $this->assertEquals($o, $n);
+    }
+    
+    /**
+     * @expectedException Regression\MatrixException
+     */
+    public function testAddIllegalColumn()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+            array(5, 6),
+        );
+        $m = new Matrix($arr);
+        $m->addColumn(array_fill(0, count($arr)-1, 1), 0);
+    }
+    
+    /**
+     * @expectedException Regression\MatrixException
+     */
+    public function testAddIllegalRow()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+            array(5, 6),
+        );
+        $m = new Matrix($arr);
+        $n = $m->addRow(array_fill(0, count($arr[0])-1, 1), 0);
     }
     
     public function testElementMultiply()
