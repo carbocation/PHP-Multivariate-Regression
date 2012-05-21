@@ -402,7 +402,7 @@ class Matrix
         for($i = 0; $i < $this->rows; $i++){
             $row = $this->MainMatrix[$i];
             $part = array_splice($row, $beforeColumn, $this->columns);
-            $row = array_merge($row, $newColumn, $part);
+            $row = array_merge($row, (array)$newColumn[$i], $part);
             
             $newMatrix[] = $row;
         }
