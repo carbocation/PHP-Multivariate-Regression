@@ -120,6 +120,10 @@ class Regression
 
     public function exec()
     {
+        if(!($this->x instanceof Matrix)
+                || !($this->y instanceof Matrix)){
+            throw new RegressionException('X and Y must be matrices.');
+        }
         //(X'X)-1
         $XtXPrime = $this->x->transpose()->multiply($this->x)->invert();
         
@@ -173,7 +177,6 @@ class Regression
         $MSE = $this->SSEScalar / $dfResidual;
         $this->covariance = $XtXPrime->scalarMultiply($MSE);
         
-        $coefficients = array();
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements of the standard errors
             $searray[] = array(sqrt($this->covariance->getEntry($i, $i)));
@@ -183,12 +186,22 @@ class Regression
             $pvalue[] = array($this->getStudentPValue($tstat[$i][0], $dfResidual));
             
             //convert into 1-d vectors and store
-            $coefficients[] = $coeff->getEntry($i, 0);
             $this->stderrors[] = $searray[$i][0];
             $this->tstats[] = $tstat[$i][0];
             $this->pvalues[] = $pvalue[$i][0];
         }
-        $this->coefficients = new Matrix(array($coefficients));
+        //$this->coefficients = new Matrix(array($coefficients));
+        $this->coefficients = $coeff;
+    }
+    
+    public function predict(Matrix $m)
+    {
+        if(!($this->coefficients instanceof Matrix)){
+            throw new RegressionException('Must run exec before calling predict');
+        }
+        
+        $m = $this->generateInterceptColumn($m);
+        return $m->multiply($this->coefficients);
     }
     
     /**
