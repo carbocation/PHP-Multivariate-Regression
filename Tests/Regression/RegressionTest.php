@@ -29,8 +29,8 @@
 namespace Tests\Regression;
 
 use Regression\CsvImport;
-use Regression\Regression;
 use Regression\Matrix;
+use Regression\Regression;
 
 class RegressionTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,8 +43,8 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
         /* @var $reg Regression */
         $reg = new Regression();
         $inputs = CsvImport::loadCsv(__DIR__ . DIRECTORY_SEPARATOR . 'MyReg.csv', array(0), array(1, 2, 3));
-        $reg->setX($inputs['x']);
-        $reg->setY($inputs['y']);
+        $reg->setX(new Matrix($inputs['x']));
+        $reg->setY(new Matrix($inputs['y']));
         $reg->exec();
         $testCoeff = new Matrix(array(array(-0.1533, 0.3764, 0.0012, 0.0227)));
         $this->assertEquals($testCoeff, $reg->getCoefficients(), '', .01);
@@ -189,8 +189,8 @@ class RegressionTest extends \PHPUnit_Framework_TestCase
 
         /* @var $reg Regression */
         $reg = new Regression();
-        $reg->setX($x);
-        $reg->setY($y);
+        $reg->setX(new Matrix($x));
+        $reg->setY(new Matrix($y));
         $reg->exec();    //go!
         //all our expected values for the above dataset.
         $testSSEScalar = 447.808;
