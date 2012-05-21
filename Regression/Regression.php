@@ -42,11 +42,11 @@ class Regression
     protected $SSTOScalar; //Total sum of squares
     protected $RSquare;         //R square
     protected $F;               //F statistic
-    protected $coefficients;    //regression coefficients array
-    protected $stderrors;    //standard errror array
-    protected $tstats;     //t statistics array
-    protected $pvalues;     //p values array
-    protected $covariance; //covariance matrix
+    protected $stderrors = array();    //standard errror array
+    protected $tstats = array();     //t statistics array
+    protected $pvalues = array();     //p values array
+    protected $coefficients;    //regression coefficients Matrix object
+    protected $covariance; //covariance Matrix object
     protected $x = array();
     protected $y = array();
     
@@ -176,6 +176,7 @@ class Regression
         $MSE = $this->SSEScalar / $dfResidual;
         $this->covariance = $XtXPrime->scalarMultiply($MSE);
         
+        $coefficients = array();
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements of the standard errors
             $searray[] = array(sqrt($this->covariance->getEntry($i, $i)));
@@ -185,20 +186,21 @@ class Regression
             $pvalue[] = array($this->getStudentPValue($tstat[$i][0], $dfResidual));
             
             //convert into 1-d vectors and store
-            $this->coefficients[] = $coeff->getEntry($i, 0);
+            $coefficients[] = $coeff->getEntry($i, 0);
             $this->stderrors[] = $searray[$i][0];
             $this->tstats[] = $tstat[$i][0];
             $this->pvalues[] = $pvalue[$i][0];
         }
+        $this->coefficients = new Matrix(array($coefficients));
     }
     
     /**
-     * Calculate the standard error for each predicted observation, 
+     * Calculate the standard error for each observation in the training dataset,
      * given the covariance matrix.
      * 
-     * @return array One row per observation 
+     * @return array One row per observation in the training data set
      */
-    public function getPredictionVariance()
+    public function computePredictionVariances()
     {
         $predictionVariances = array();
         
