@@ -291,4 +291,85 @@ class MatrixTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Regression\Matrix', $n);
     }
     
+    public function testAddRow()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+            array(5, 6),
+        );
+        $m = new Matrix($arr);
+        $n = $m->addRow(array_fill(0, count($arr[0]), 1), 0);
+        
+        $arr2 = array(
+            array(1, 1),
+            array(1, 2),
+            array(3, 4),
+            array(5, 6),
+        );
+        $o = new Matrix($arr2);
+        
+        $this->assertEquals($o, $n);
+    }
+    
+    public function testAddColumn()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+            array(5, 6),
+        );
+        $m = new Matrix($arr);
+        $n = $m->addColumn(array_fill(0, count($arr), 1), 0);
+        
+        $arr2 = array(
+            array(1, 1, 2),
+            array(1, 3, 4),
+            array(1, 5, 6),
+        );
+        $o = new Matrix($arr2);
+        
+        $this->assertEquals($o, $n);
+    }
+    
+    public function testElementMultiply()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+        );
+        $m = new Matrix($arr);
+        $n = $m->elementMultiply($m);
+        
+        $o = new Matrix(array(
+            array(1, 4),
+            array(9, 16),
+        ));
+        
+        $this->assertEquals($n, $o);
+    }
+    
+    public function testElementDivide()
+    {
+        $arr = array(
+            array(1, 2),
+            array(3, 4),
+        );
+        $m = new Matrix($arr);
+        
+        $arr2 = array(
+            array(1, 4),
+            array(9, 16),
+        );
+        $n = new Matrix($arr2);
+        
+        $o = $m->elementDivide($n);
+        
+        $p = new Matrix(array(
+            array(1, 0.5),
+            array(0.333333, 0.25),
+        ));
+        
+        $this->assertEquals($o, $p, '', 0.0001);
+    }
 }
