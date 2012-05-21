@@ -125,21 +125,19 @@ class Regression
             throw new RegressionException('X and Y must be matrices.');
         }
         //(X'X)-1
-        $XtXPrime = $this->x->transpose()->multiply($this->x)->invert();
-        
-        //X'Y
-        $XtY = $this->x->transpose()->multiply($this->y);
+        $XtXInv = $this->x->transpose()->multiply($this->x)->invert();
         
         //coefficients = b = (X'X)-1 X'Y 
-        $coeff = $XtXPrime->multiply($XtY);
-        
-        //Generate predictions
-        // Xb
-        $mPredictions = $this->x->multiply($coeff);
+        $this->coefficients = $XtXInv->multiply($this->x->transpose()->multiply($this->y));
         
         //Generate b'X'Y, which we will reuse
         // b'X'Y = (Xb)'Y = (predictions)'Y
-        $btXtY = $mPredictions->transpose()->multiply($this->y);
+        $btXtY = $this->coefficients
+                ->transpose()
+                ->multiply(
+                        $this->x
+                        ->transpose())
+                ->multiply($this->y);
         
         $num_independent = $this->x->getNumColumns();   //note: intercept is included
         $sample_size = $this->x->getNumRows();
@@ -175,13 +173,13 @@ class Regression
         
         //MSE = SSE/(df)
         $MSE = $this->SSEScalar / $dfResidual;
-        $this->covariance = $XtXPrime->scalarMultiply($MSE);
+        $this->covariance = $XtXInv->scalarMultiply($MSE);
         
         for($i = 0; $i < $num_independent; $i++){
             //get the diagonal elements of the standard errors
             $searray[] = array(sqrt($this->covariance->getEntry($i, $i)));
             //compute the t-statistic
-            $tstat[] = array($coeff->getEntry($i, 0) / $searray[$i][0]);
+            $tstat[] = array($this->coefficients->getEntry($i, 0) / $searray[$i][0]);
             //compute the student p-value from the t-stat
             $pvalue[] = array($this->getStudentPValue($tstat[$i][0], $dfResidual));
             
@@ -190,8 +188,8 @@ class Regression
             $this->tstats[] = $tstat[$i][0];
             $this->pvalues[] = $pvalue[$i][0];
         }
-        //$this->coefficients = new Matrix(array($coefficients));
-        $this->coefficients = $coeff;
+        
+        return $this;
     }
     
     public function predict(Matrix $m)
