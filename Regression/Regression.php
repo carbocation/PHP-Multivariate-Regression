@@ -168,7 +168,7 @@ class Regression
                 ->getEntry(0, 0);
 
         $this->SSTOScalar = $this->SSRScalar + $this->SSEScalar;
-        $this->RSquare = $this->SSRScalar / $this->SSTOScalar;
+        $this->RSquare = $this->SSTOScalar == 0 ? 1 : $this->SSRScalar / $this->SSTOScalar;
         $this->F = ($this->SSRScalar / $dfModel) / ($this->SSEScalar / $dfResidual);
         
         //MSE = SSE/(df)
