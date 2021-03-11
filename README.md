@@ -1,3 +1,8 @@
+Note: This repository is archived
+=================================
+
+I would recommend using a language such as R, Python, or Julia for scientific computing. Since I no longer use PHP, I have archived this repository.
+
 PHP Multivariate Regression
 ===========================
 
